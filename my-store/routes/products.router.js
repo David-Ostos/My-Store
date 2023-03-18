@@ -36,5 +36,42 @@ router.get('/:id', (req,res) => { // este endpoint es para obtener el id en este
   });
 });
 
+/*
+  el metodo post se utiliza para recibir peticiones o datos que se envian a la base de datos
+  de la manera siguiente
+      // nora: para poder mostrar los datos corrextamente hay que utilizaz un middleware en el index.js
+ */
+router.post('/', (req, res) => {
+  const body = req.body;
+  res.json({
+    message: 'created',
+    data: body
+  });
+});
+
+/*
+  patch es el metodo que se encarga de modificar los archivos parcialmente ( por partes ) y el PUT se utiliza para modificar todo el archo completo
+  esto no es obligatorio ya que es por convencion y es para poder tener una buena practica
+*/
+router.patch('/:id', (req, res) => {
+  const { id } = req.params;
+  const body = req.body;
+  res.json({
+    message: 'update',
+    data: body,
+    id,
+  });
+});
+
+/*
+ Delete es para eliminar
+*/
+router.delete('/:id', (req, res) => {
+  const { id } = req.params;
+  res.json({
+    message: 'delete',
+    id,
+  });
+});
 
 module.exports = router;

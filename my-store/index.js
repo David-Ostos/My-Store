@@ -2,7 +2,7 @@
 //libreria express
 const express = require('express');
 const routerApi = require('./routes');
-const { errorHandler, logErrors }  = require('./middleware/error.handler');
+const { errorHandler, logErrors, boomErrorHandler }  = require('./middleware/error.handler');
 
 const app = express();              // aqui se cran las constantes para poder activar express
 const port = 3000;                // constante que tiene el port que vamos a utilizar
@@ -21,6 +21,7 @@ app.get('/nueva-ruta', (req,res) => {   //creando nueva ruta
 routerApi(app);
 
 app.use(logErrors);
+app.use(boomErrorHandler);
 app.use(errorHandler);
 
 app.listen(port, () => {

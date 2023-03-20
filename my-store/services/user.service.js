@@ -1,4 +1,5 @@
 const { faker } = require('@faker-js/faker');
+const boom = require('@hapi/boom');
 
 class UserService{
 
@@ -29,27 +30,26 @@ class UserService{
   }
 
   find(){
+    // eslint-disable-next-line no-unused-vars
     return new Promise((resolve, reject) => {
-      try{
-        setTimeout(()=> {
-          resolve(this.users);
-        },5000);
-      }catch(e){
-        throw new Error(e,reject);
-      }
+      setTimeout(()=> {
+        resolve(this.users);
+      },5000);
     });
   }
 
   async findOne(id){
-    // eslint-disable-next-line no-unused-vars
-    const name = this.getTotal();
-    return this.users.find(item => item.id === id);
+    const user = this.users.find(item => item.id === id);
+    if(!user){
+      throw boom.notFound('Product not found');
+    }
+    return user;
   }
 
   async update(id, changes){
     const index = this.users.findIndex(item => item.id === id);
     if(index === -1){
-      throw new Error('User not found');
+      throw boom.notFound('Product not found');
     }
     const user = this.users[index];
     this.users[index] = {
@@ -62,7 +62,7 @@ class UserService{
   async delete(id){
     const index = this.users.findIndex(item => item.id === id);
     if (index === -1) {
-      throw new Error('User ' + id + ' does not exist');
+      throw boom.notFound('Product not found');
     }
     this.users.splice(index, 1);
     return {id, message: 'successfully deleted'};

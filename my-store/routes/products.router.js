@@ -44,16 +44,14 @@ router.post('/', async (req, res) => {
   patch es el metodo que se encarga de modificar los archivos parcialmente ( por partes ) y el PUT se utiliza para modificar todo el archo completo
   esto no es obligatorio ya que es por convencion y es para poder tener una buena practica
 */
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
     const body = req.body;
     const product = await service.update(id, body);
     res.json(product);
   } catch (error) {
-    res.status(404).json({
-      message: error.message
-    });
+    next(error);
   }
 });
 

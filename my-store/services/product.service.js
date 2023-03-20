@@ -1,5 +1,6 @@
 //libreri faker new
 const { faker } = require('@faker-js/faker');
+const boom  = require('@hapi/boom');
 
 class ProductService{
 
@@ -15,7 +16,8 @@ class ProductService{
         id: faker.datatype.uuid(),
         name: faker.commerce.productName(),
         price: parseInt(faker.commerce.price(), 10),
-        image: faker.image.imageUrl()
+        image: faker.image.imageUrl(),
+        isBlock: faker.datatype.boolean()
       });
     }
   }
@@ -42,15 +44,19 @@ class ProductService{
   }
 
   async findOne(id){
-    // eslint-disable-next-line no-unused-vars
-    const name = this.getTotal();
-    return this.products.find(item => item.id === id);  //.find() regresa el objeto encontrado por el id
+    const product = this.products.find(item => item.id === id);  //.find() regresa el objeto encontrado por el id
+    if(!product){
+      throw boom.notFound('Product not found');
+    }else if(product.isBlock){
+      throw boom.conflict('Product is block');
+    }
+    return product;
   }
 
   async update(id, changes){
     const index = this.products.findIndex(item => item.id === id); // findIndex() regresa la posiocion del objeto encontrado
     if(index === -1){                                             // se crea esta condicional para saber si existe el id el -1 refiere a que no existe
-      throw new Error('Product not found');
+      throw boom.notFound('Product not found');
     }
     const product = this.products[index];
     this.products[index] = {
@@ -62,7 +68,7 @@ class ProductService{
   async delete(id){
     const index = this.products.findIndex(item => item.id === id); // findIndex() regresa la posiocion del objeto encontrado
     if(index === -1){                                             // se crea esta condicional para saber si existe el id el -1 refiere a que no existe
-      throw new Error('Product not found');
+      throw boom.notFound('Product not found');
     }
     this.products.splice(index, 1);                                        // el termino splice es para poder eliminar apartir de 2 parametros 1ero la posicion 2do para saber cuantos va a eliminar
     return {id , mesasge: 'successfully deleted'};

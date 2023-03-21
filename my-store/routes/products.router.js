@@ -1,6 +1,12 @@
 // se extrae y se separa todo lo que tenga que ver con la seccion products en un aerchivo idependiente
 const express = require('express');
+
 const ProductService = require('./../services/product.service');
+const validatorHandler = require('./../middleware/validator.handler.js');
+const {   createProductSchemas,
+  updateProductSchemas,
+  getProductSchemas
+} = require('./../schemas/product.schema');
 
 const router = express.Router();
 const service = new ProductService();
@@ -17,15 +23,18 @@ router.get('/filter', async (req, res) => {                                 // l
 });
 
 //endpoint especifico encontrar producto por id
-router.get('/:id', async (req,res,next) => {                                 // este endpoint es para obtener el id en este caso de la url y es dinamico
-  try {
-    const { id } = req.params;
-    const product = await service.findOne(id);
-    res.json(product);
-  } catch (error) {
-    next(error);
+router.get('/:id',
+  validatorHandler(getProductSchemas,'params'),
+  async (req,res,next) => {                                 // este endpoint es para obtener el id en este caso de la url y es dinamico
+    try {
+      const { id } = req.params;
+      const product = await service.findOne(id);
+      res.json(product);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 // endpoint para crear un producto
 /*
@@ -33,27 +42,32 @@ router.get('/:id', async (req,res,next) => {                                 // 
   de la manera siguiente
       // nota: para poder mostrar los datos correctamente hay que utilizaz un middleware en el index.js
  */
-router.post('/', async (req, res) => {
-  const body = req.body;
-  const newProduct = await service.create(body);
-  res.status(201).json(newProduct);
-});
+router.post('/',
+  validatorHandler(createProductSchemas,'body'),
+  async (req, res) => {
+    const body = req.body;
+    const newProduct = await service.create(body);
+    res.status(201).json(newProduct);
+  });
 
 //endpoint para modificar un producto
 /*
   patch es el metodo que se encarga de modificar los archivos parcialmente ( por partes ) y el PUT se utiliza para modificar todo el archo completo
   esto no es obligatorio ya que es por convencion y es para poder tener una buena practica
 */
-router.patch('/:id', async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const body = req.body;
-    const product = await service.update(id, body);
-    res.json(product);
-  } catch (error) {
-    next(error);
-  }
-});
+router.patch('/:id',
+  validatorHandler(getProductSchemas,'params'),
+  validatorHandler(updateProductSchemas,'body'),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const body = req.body;
+      const product = await service.update(id, body);
+      res.json(product);
+    } catch (error) {
+      next(error);
+    }
+  });
 
 //enpoint para eliminar un producto
 /*

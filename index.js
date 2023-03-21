@@ -5,13 +5,14 @@ const routerApi = require('./routes');
 const { errorHandler, logErrors, boomErrorHandler }  = require('./middleware/error.handler');
 const cors = require('cors');
 
-const whitelist = ['https://my-app-express-krr9.onrender.com'];
+const whitelist = ['https://my-app-express-krr9.onrender.com','http://192.168.100.211:3000'];
+
 const options = {
   origin: (origin, callback) => {
-    if (whitelist.includes(origin)){
+    if (whitelist.indexOf(origin) !== -1){
       callback(null, true);
     }else{
-      callback(new Error('no permitido'));
+      callback(new Error('no permitido, cors no acceptado'));
     }
   }
 };
@@ -21,7 +22,6 @@ const port = 3000;                // constante que tiene el port que vamos a uti
 const IP = '192.168.100.211';   // const donde tenemos la IP de nuestro router para poder ver la pagina en todos los dispositivos
 
 app.use(express.json());
-app.use(cors(options));
 
 /* app.get('/', (req,res) => {                  // asi se crea una nueva page donde res(response) es la info que se trae del servidor y req(require) es la informacion que se manda al servidor
   res.send('Hola mi server en express');    //  se utilisa res.send() para enviar algo a la url designada
@@ -32,6 +32,8 @@ app.get('/nueva-ruta', (req,res) => {   //creando nueva ruta
 }); */
 
 routerApi(app);
+
+app.use(cors(options));
 
 app.use(logErrors);
 app.use(boomErrorHandler);

@@ -7,7 +7,6 @@ const cors = require('cors');
 
 const whitelist = ['https://my-app-express-krr9.onrender.com',
   'http://192.168.100.211:3000',
-  'http://192.168.100.211:3770',
   'https://my-store-production-e6b7.up.railway.app'];
 
 const options = {
@@ -36,7 +35,7 @@ app.get('/nueva-ruta', (req,res) => {   //creando nueva ruta
 
 routerApi(app);
 
-app.use(cors());
+app.use(cors(options));
 
 app.use(logErrors);
 app.use(boomErrorHandler);

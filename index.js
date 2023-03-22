@@ -18,7 +18,7 @@ const options = {
 };
 
 const app = express();              // aqui se cran las constantes para poder activar express
-const port = 3000;                // constante que tiene el port que vamos a utilizar
+const port = process.env.PORT ||3770;                // constante que tiene el port que vamos a utilizar
 const IP = '192.168.100.211';   // const donde tenemos la IP de nuestro router para poder ver la pagina en todos los dispositivos
 
 app.use(express.json());

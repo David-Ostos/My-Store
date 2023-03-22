@@ -5,7 +5,7 @@ const routerApi = require('./routes');
 const { errorHandler, logErrors, boomErrorHandler }  = require('./middleware/error.handler');
 const cors = require('cors');
 
-const whitelist = ['https://my-app-express-krr9.onrender.com','http://192.168.100.211:3000'];
+const whitelist = ['https://my-app-express-krr9.onrender.com','http://192.168.100.211:3000','https://my-store-production-e6b7.up.railway.app'];
 
 const options = {
   origin: (origin, callback) => {

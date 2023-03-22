@@ -5,7 +5,10 @@ const routerApi = require('./routes');
 const { errorHandler, logErrors, boomErrorHandler }  = require('./middleware/error.handler');
 const cors = require('cors');
 
-const whitelist = ['https://my-app-express-krr9.onrender.com','http://192.168.100.211:3000','https://my-store-production-e6b7.up.railway.app'];
+const whitelist = ['https://my-app-express-krr9.onrender.com',
+  'http://192.168.100.211:3000',
+  'http://192.168.100.211:3770',
+  'https://my-store-production-e6b7.up.railway.app'];
 
 const options = {
   origin: (origin, callback) => {
@@ -18,7 +21,7 @@ const options = {
 };
 
 const app = express();              // aqui se cran las constantes para poder activar express
-const port = process.env.PORT ||3770;                // constante que tiene el port que vamos a utilizar
+const port = process.env.PORT ||3000;                // constante que tiene el port que vamos a utilizar
 const IP = '192.168.100.211';   // const donde tenemos la IP de nuestro router para poder ver la pagina en todos los dispositivos
 
 app.use(express.json());
@@ -33,11 +36,15 @@ app.get('/nueva-ruta', (req,res) => {   //creando nueva ruta
 
 routerApi(app);
 
-app.use(cors(options));
+app.use(cors());
 
 app.use(logErrors);
 app.use(boomErrorHandler);
 app.use(errorHandler);
+
+app.get('/', (req, res) =>{
+  res.status(200).send({ msg: 'Hola Mundo'});
+});
 
 app.listen(port, () => {
   console.log('http://'+ IP +':' + port + '/');
